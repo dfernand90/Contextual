@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart'; // Needed for kIsWeb
 
 class ApiService {
   static const String baseUrl =
-      "http://127.0.0.1:8000"; // Your Django backend URL
+      "https://0ca6-85-252-83-74.ngrok-free.app"; //"http://127.0.0.1:8000"; // Your Django backend URL
 
   // Login the user with username and password
   static Future<bool> login(String username, String password) async {
