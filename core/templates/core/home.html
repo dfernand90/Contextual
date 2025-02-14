@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+</head>
+<body>
+    <h2>Welcome, {{ user.username }}</h2>
+    <p>Accumulated Number: {{ accumulated_number }}</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <input type="number" name="current_number" placeholder="Enter a number" required>
+        <button type="submit">Add</button>
+    </form>
+
+    <a href="{% url 'logout' %}"><button>Logout</button></a>
+</body>
+</html>

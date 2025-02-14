@@ -1,0 +1,68 @@
+/* hide new Topic section for now, while AIAA resolves old taxonomy transfer */
+.hide-topics {
+	display: none!important;
+}
+
+/* size down Publication Date on Book TOC */
+#pubdate {
+	font-size: 1rem;
+}
+
+/* hide duplicate header in LIT-319508 before engineering fix */
+h2.hide-header {
+    display: none;
+}
+
+/* inst admin profile d/l link */
+#accessEntitlementsDownloadInfo a{
+color: #003A70;
+}
+
+/* change teaser--main background */
+.teaser--main {
+background-color: #6F82A7;
+}
+
+/* browse banner background */
+.browse-banner {
+background-color: #6F82A7;
+}
+
+/* error pages styles */
+.error-page__ul {
+padding-left: 0;
+list-style: none;
+margin: 0 0 30px;
+}
+
+.error-page__ul li:before {
+display: inline-block;
+content: '-';
+margin-right: 6px;
+}
+
+/* pub content widget sidebar temp fix */
+article .tab__content {
+background: #fafafa;
+border: 1px solid #d9d9d9;
+}
+
+/* subscribe button spacing 
+.btn-subscribe {
+margin-top: 16px;
+} */
+
+/* standard denial messaging 
+.standard-denial a{
+font-weight: 700;
+color: #003A70;
+text-decoration: none;
+} */
+
+/* supplemental files link 
+.suppl-files a{
+transition: all 0.15s linear;
+transition-property: color,text-decoration,outline,text-shadow;
+color: #003A70;
+text-decoration: none;
+} */
