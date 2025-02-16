@@ -6,7 +6,23 @@ import 'package:flutter/foundation.dart'; // Needed for kIsWeb
 
 class ApiService {
   static const String baseUrl =
-      "https://0ca6-85-252-83-74.ngrok-free.app"; //"http://127.0.0.1:8000"; // Your Django backend URL
+      "https://1db7-85-252-83-74.ngrok-free.app"; //"http://127.0.0.1:8000"; // Your Django backend URL
+
+  // Signup the user with username and password
+  static Future<bool> signup(
+      String username, String password, String code) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/signup/'),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        'username': username,
+        'password': password,
+        'code': code,
+      }),
+    );
+
+    return response.statusCode == 200;
+  }
 
   // Login the user with username and password
   static Future<bool> login(String username, String password) async {
@@ -24,7 +40,12 @@ class ApiService {
 
   // Fetch total for the user
   static Future<int> getTotal(String username) async {
-    final response = await http.get(Uri.parse('$baseUrl/api/total/$username/'));
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/total/$username/'),
+      headers: {"Content-Type": "application/json"},
+      //body: jsonEncode({'user': username}),
+    );
+    //print(response.body);
 
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
@@ -118,8 +139,12 @@ class ApiService {
 
   // Fetch list of files for a user
   static Future<List<String>> fetchFiles(String username) async {
-    final response = await http.get(Uri.parse('$baseUrl/api/files/$username/'));
-
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/files/$username/'),
+      headers: {"Content-Type": "application/json"},
+    );
+    // print(response.body);
+    print('Response Status Code: ${response.statusCode}');
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       return List<String>.from(data['files']);

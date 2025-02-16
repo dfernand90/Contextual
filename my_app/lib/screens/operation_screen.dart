@@ -26,7 +26,7 @@ class _OperationScreenState extends State<OperationScreen> {
   ];
   File? selectedFile;
   List<String> files = [];
-
+  final containerColor = const Color.fromARGB(238, 229, 229, 255);
   @override
   void initState() {
     super.initState();
@@ -140,7 +140,7 @@ class _OperationScreenState extends State<OperationScreen> {
                         decoration: BoxDecoration(
                           //border: Border.all(color: Colors.grey),
                           borderRadius: BorderRadius.circular(20),
-                          color: const Color.fromARGB(255, 234, 237, 253),
+                          color: containerColor,
                         ),
                         child: ListView.builder(
                           itemCount: files.isNotEmpty
@@ -233,7 +233,7 @@ class _OperationScreenState extends State<OperationScreen> {
                     decoration: BoxDecoration(
                       //border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(10),
-                      color: const Color.fromARGB(255, 234, 237, 253),
+                      color: containerColor,
                     ),
                     child: TextField(
                       minLines: 4,

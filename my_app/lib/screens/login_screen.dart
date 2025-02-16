@@ -10,7 +10,37 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController codeController = TextEditingController();
   String errorMessage = '';
+  final containerColor = const Color.fromARGB(238, 229, 229, 255);
+
+  // create user
+  void _signup() async {
+    String username = usernameController.text;
+    String password = passwordController.text;
+    String code = codeController.text;
+    try {
+      bool isAuthenticated = await ApiService.signup(username, password, code);
+
+      if (isAuthenticated) {
+        // If login is successful, navigate to home screen
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OperationScreen(username: username),
+          ),
+        );
+      } else {
+        setState(() {
+          errorMessage = 'Invalid signup';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        errorMessage = 'Error signing up in: $e';
+      });
+    }
+  }
 
   // Handle login
   void _login() async {
@@ -49,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
           offset: Offset(0, -150),
           child: Container(
             margin: const EdgeInsets.all(10.0),
-            color: const Color.fromARGB(255, 234, 237, 253),
+            color: containerColor,
             height: 300,
             width: 500,
             alignment: Alignment(100, 1.0),
@@ -69,10 +99,24 @@ class _LoginScreenState extends State<LoginScreen> {
                     obscureText: true,
                     decoration: InputDecoration(labelText: 'Password'),
                   ),
+                  TextField(
+                    controller: codeController,
+                    decoration: (InputDecoration(
+                        labelText: 'Validation code',
+                        hintText: 'Enter the validation code')),
+                  ),
                   SizedBox(height: 40),
-                  ElevatedButton(
-                    onPressed: _login,
-                    child: Text('Login'),
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: _login,
+                        child: Text('Login'),
+                      ),
+                      ElevatedButton(
+                        onPressed: _signup,
+                        child: Text('Sign Up'),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 25),
                   if (errorMessage.isNotEmpty)
