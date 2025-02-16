@@ -7,7 +7,8 @@ import json
 from .models import UserNumber
 from django.core.files.storage import default_storage
 import stat
-
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 import os
 from django.conf import settings
 
@@ -24,6 +25,38 @@ def ensure_directory_permissions(directory):
     os.chmod(directory, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  
 
 UPLOAD_DIR = "./userfolder/" 
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def signup(request):
+    print("enter in signup")
+    try:
+        data = json.loads(request.body)
+        username = data['username']
+        password = data['password']
+        nordic_code = data['code']
+        print("code:",nordic_code)
+        # Authenticate user
+        #user = authenticate(username=username, password=password)
+        if nordic_code == "nordic-ai.no":
+            print("code verified")
+            user, created = User.objects.get_or_create(username=username)
+            if created:
+                print("user created")
+                user.set_password(password)
+                user.save()
+                UserNumber.objects.create(user=user)
+                return JsonResponse({'message': 'Sign successful', 'username': username}) 
+            else:
+                print("user not created")
+                return JsonResponse({'error': 'User already registered'}, status=401)
+        else:
+            print("code not verified")
+            return JsonResponse({'error': 'Fail confirmation code'}, status=401)
+           
+    except KeyError:
+        return JsonResponse({'error': 'Invalid request data'}, status=400)
+
 @csrf_exempt
 @require_http_methods(["POST"])
 def login(request):
@@ -31,9 +64,10 @@ def login(request):
         data = json.loads(request.body)
         username = data['username']
         password = data['password']
-
+        
         # Authenticate user
-        #user = authenticate(username=username, password=password)
+        user = authenticate(username=username, password=password)
+        """
         user, created = User.objects.get_or_create(username=username)
         if created:
             user.set_password(password)
@@ -41,6 +75,7 @@ def login(request):
             UserNumber.objects.create(user=user) 
         else:
             user = authenticate(username=username, password=password)
+        """
         if user is None:
             return JsonResponse({'error': 'Invalid credentials'}, status=401)
         else:
@@ -49,7 +84,10 @@ def login(request):
         return JsonResponse({'error': 'Invalid request data'}, status=400)
 
 # View to fetch the accumulated total for a user
+@csrf_exempt
+@require_http_methods(["POST"])
 def get_total(request, username):
+    
     try:
         user = User.objects.get(username=username)
         user_total = UserNumber.objects.get(user=user)
@@ -61,6 +99,7 @@ def get_total(request, username):
 @csrf_exempt
 @require_http_methods(["POST"])
 def add_number(request, username):
+    
     try:
         user = User.objects.get(username=username)
         user_total = UserNumber.objects.get(user=user)
@@ -118,15 +157,19 @@ def upload_file(request):
 
     return JsonResponse({'error': 'Invalid request'}, status=405)
 
+@csrf_exempt
+@require_http_methods(["POST"])
 def list_files(request, username):
+    print("enter list files")
     """ Returns a list of files in the user's folder. """
     user_folder = os.path.join(UPLOAD_DIR, username)
-
+    print("accessing list files")
     if not os.path.exists(user_folder):
         return JsonResponse({"files": []})  # Return empty list if folder doesn't exist
 
     try:
         files = os.listdir(user_folder)  # Get file names
+        print(files)
         return JsonResponse({"files": files})
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)

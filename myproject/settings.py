@@ -25,9 +25,16 @@ SECRET_KEY = 'django-insecure-w2s@k_p&)h!mb0joui%y$plnf2hi&dp_vb1k^0g%%)m#ppg!xs
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+# do not add https: in the ngrok host
+ALLOWED_HOSTS = [
+    'localhost', 
+    '127.0.0.1',
+    '1db7-85-252-83-74.ngrok-free.app',
+]
 
-ALLOWED_HOSTS = []
-
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = False  # Disable forced redirects
 
 # Application definition
 
@@ -129,6 +136,15 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOWED_ORIGINS = [
+    'https://1db7-85-252-83-74.ngrok-free.app',  # Replace with your actual ngrok URL
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://1db7-85-252-83-74.ngrok-free.app", 
+    "http://1db7-85-252-83-74.ngrok-free.app",  # Replace with your actual ngrok URL
+] # Replace with your actual ngrok URL
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

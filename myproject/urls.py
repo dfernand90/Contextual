@@ -26,7 +26,12 @@ urlpatterns = [
     path('api/total/<str:username>/', views.get_total, name='get_total'),
     path('api/add/<str:username>/', views.add_number, name='add_number'),
     path('api/login/', views.login, name='login'),
+    path('api/signup/', views.signup, name='signup'),
     path('api/upload/', views.upload_file, name='upload_files'),
     path('api/files/<str:username>/', views.list_files, name='list_files'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# (Invoke-WebRequest -Uri "https://1db7-85-252-83-74.ngrok-free.app/api/total/er" -Method Get).Content
+# (Invoke-WebRequest -Uri "http://127.0.0.1:8000/api/total/er" -Method Get).Content
+# curl -I "https://1db7-85-252-83-74.ngrok-free.app/api/total/er"
