@@ -70,7 +70,26 @@ class ApiService {
       throw Exception('Failed to add number');
     }
   }
+  // query an llm
+  static Future<int> queryLlm(String username, String query, Float temperature, String model) async {
+    final requestBody = {
+        'query': query,
+        'temperature': temperature,
+        'model': model,
+      };
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/query_llm/$username/'),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(requestBody),
+    );
 
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      return data['response'];
+    } else {
+      throw Exception('Failed to get an answer');
+    }
+  }
   // Upload file (Mobile/Desktop)
   static Future<bool> uploadFile(String username, File file) async {
     try {

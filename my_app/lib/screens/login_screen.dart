@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 import 'operation_screen.dart';
+import 'llm_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -27,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => OperationScreen(username: username),
+            builder: (context) => llmScreen(username: username),
           ),
         );
       } else {
