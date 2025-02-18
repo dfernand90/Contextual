@@ -16,7 +16,8 @@ class _llmScreenState extends State<llmScreen> {
   final TextEditingController numberController = TextEditingController();
   final TextEditingController queryController = TextEditingController();
   int accumulatedTotal = 0;
-  Float sliderValue = 0.5;
+  String currentResponse = "welcome";
+  double sliderValue = 0.5;
   String selectedEntry = "llama3.2:1b";
   final List<String> dropdownEntries = [
     "llama3.2:1b",
@@ -45,27 +46,14 @@ class _llmScreenState extends State<llmScreen> {
     }
   }
 
-  void _addNumber() async {
-    try {
-      int newTotal = await ApiService.addNumber(
-          widget.username, int.parse(numberController.text));
-      setState(() {
-        accumulatedTotal = newTotal;
-      });
-      numberController.clear();
-    } catch (e) {
-      print("Error adding number: $e");
-    }
-  }
-
   void _queryLlm() async {
     try {
       String response = await ApiService.queryLlm(
-        widget.username,
-        queryController.text, // No need for String.parse
-        double.parse(sliderValue.toString()), // Convert sliderValue properly
-        selectedEntry // Directly pass selectedEntry (already a String)
-        );
+          widget.username,
+          queryController.text, // No need for String.parse
+          sliderValue, // Convert sliderValue properly
+          selectedEntry // Directly pass selectedEntry (already a String)
+          );
       setState(() {
         currentResponse = response;
       });
@@ -129,7 +117,7 @@ class _llmScreenState extends State<llmScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Welcome, ${widget.username}!")),
+      appBar: AppBar(title: Text("DEBUG MODE")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
@@ -224,16 +212,17 @@ class _llmScreenState extends State<llmScreen> {
                     height: 413,
                     alignment: Alignment.topLeft,
                     child: TextField(
-                      controller: TextEditingController(
-                          text: "Accumulated Number: $accumulatedTotal"),
+                      controller:
+                          TextEditingController(text: " $currentResponse"),
                       readOnly: true, // Make the TextField non-editable
                       style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors
-                            .black, // You can adjust the color to match your theme
+                        fontSize: 20,
+                        //fontWeight: FontWeight.bold,
+                        color: const Color.fromARGB(202, 61, 61,
+                            61), // You can adjust the color to match your theme
                       ),
-
+                      maxLines: null,
+                      expands: true,
                       decoration: InputDecoration(
                         border: InputBorder
                             .none, // Removes the border for a cleaner look
@@ -272,7 +261,7 @@ class _llmScreenState extends State<llmScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ElevatedButton(onPressed: _addNumber, child: Text("Add")),
+                      ElevatedButton(onPressed: _queryLlm, child: Text("send")),
                       SizedBox(width: 10),
                       ElevatedButton(onPressed: _logout, child: Text("Logout")),
                     ],
@@ -292,7 +281,7 @@ class _llmScreenState extends State<llmScreen> {
                             height: 5,
                             width: 200,
                           ),
-                          Text("Creative"),
+                          Text("Precise"),
                           Slider(
                             value: sliderValue,
                             onChanged: (newValue) {
@@ -305,7 +294,7 @@ class _llmScreenState extends State<llmScreen> {
                             divisions: 24,
                             label: sliderValue.toStringAsFixed(1),
                           ),
-                          Text("Precise"),
+                          Text("Creative"),
                         ],
                       ),
                     ),

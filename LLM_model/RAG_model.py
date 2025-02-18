@@ -4,7 +4,7 @@ from llama_index.llms.ollama import Ollama
 from transformers import AutoTokenizer
 #from IPython.display import Markdown, display
 
-def create_a_query_engine(model ="llama3.2:1b", temperature = 0.75, document_path = "C:\Contextual\Contextual\userfolder\test"):
+def create_a_query_engine(model ="llama3.2:1b", temperature = 0.75, document_path = "C:\\django_test\\userfolder\\er"):
     # set the LLM
     
     llm = Ollama(model=model,temperature=temperature, request_timeout=360.0)

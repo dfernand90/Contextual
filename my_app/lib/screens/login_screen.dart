@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => OperationScreen(username: username),
+            builder: (context) => llmScreen(username: username),
           ),
         );
       } else {
@@ -107,17 +107,23 @@ class _LoginScreenState extends State<LoginScreen> {
                         hintText: 'Enter the validation code')),
                   ),
                   SizedBox(height: 40),
-                  Row(
-                    children: [
-                      ElevatedButton(
-                        onPressed: _login,
-                        child: Text('Login'),
-                      ),
-                      ElevatedButton(
-                        onPressed: _signup,
-                        child: Text('Sign Up'),
-                      ),
-                    ],
+                  Align(
+                    alignment: Alignment.center, // Center the buttons
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment
+                          .center, // Ensure buttons are centered in the Row
+                      children: [
+                        ElevatedButton(
+                          onPressed: _login,
+                          child: Text('Login'),
+                        ),
+                        SizedBox(width: 10), // Add spacing between buttons
+                        ElevatedButton(
+                          onPressed: _signup,
+                          child: Text('Sign Up'),
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(height: 25),
                   if (errorMessage.isNotEmpty)

@@ -70,13 +70,15 @@ class ApiService {
       throw Exception('Failed to add number');
     }
   }
+
   // query an llm
-  static Future<int> queryLlm(String username, String query, Float temperature, String model) async {
+  static Future<String> queryLlm(
+      String username, String query, double temperature, String model) async {
     final requestBody = {
-        'query': query,
-        'temperature': temperature,
-        'model': model,
-      };
+      'query': query,
+      'temperature': temperature,
+      'model': model,
+    };
     final response = await http.post(
       Uri.parse('$baseUrl/api/query_llm/$username/'),
       headers: {"Content-Type": "application/json"},
@@ -90,6 +92,7 @@ class ApiService {
       throw Exception('Failed to get an answer');
     }
   }
+
   // Upload file (Mobile/Desktop)
   static Future<bool> uploadFile(String username, File file) async {
     try {
