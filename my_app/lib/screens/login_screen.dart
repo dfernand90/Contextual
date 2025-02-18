@@ -73,66 +73,59 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
+
     return Scaffold(
       appBar: AppBar(title: Text('Login')),
       body: Center(
-        child: Transform.translate(
-          offset: Offset(0, -150),
+        child: SingleChildScrollView(
           child: Container(
             margin: const EdgeInsets.all(10.0),
             color: containerColor,
-            height: 300,
-            width: 500,
-            alignment: Alignment(100, 1.0),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextField(
-                    controller: usernameController,
-                    decoration: (InputDecoration(
-                        labelText: 'Username',
-                        hintText: 'Enter the 16 characters you got by mail')),
+            width: isMobile ? MediaQuery.of(context).size.width * 0.9 : 500,
+            height: isMobile ? 400 : 300,
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextField(
+                  controller: usernameController,
+                  decoration: InputDecoration(
+                    labelText: 'Username',
+                    hintText: 'Enter the 16 characters you got by mail',
                   ),
-                  TextField(
-                    controller: passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(labelText: 'Password'),
+                ),
+                TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(labelText: 'Password'),
+                ),
+                TextField(
+                  controller: codeController,
+                  decoration: InputDecoration(
+                    labelText: 'Validation code',
+                    hintText: 'Enter the validation code',
                   ),
-                  TextField(
-                    controller: codeController,
-                    decoration: (InputDecoration(
-                        labelText: 'Validation code',
-                        hintText: 'Enter the validation code')),
-                  ),
-                  SizedBox(height: 40),
-                  Align(
-                    alignment: Alignment.center, // Center the buttons
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment
-                          .center, // Ensure buttons are centered in the Row
-                      children: [
-                        ElevatedButton(
-                          onPressed: _login,
-                          child: Text('Login'),
-                        ),
-                        SizedBox(width: 10), // Add spacing between buttons
-                        ElevatedButton(
-                          onPressed: _signup,
-                          child: Text('Sign Up'),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 25),
-                  if (errorMessage.isNotEmpty)
-                    Text(
+                ),
+                SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(onPressed: _login, child: Text('Login')),
+                    SizedBox(width: 10),
+                    ElevatedButton(onPressed: _signup, child: Text('Sign Up')),
+                  ],
+                ),
+                if (errorMessage.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 15),
+                    child: Text(
                       errorMessage,
                       style: TextStyle(color: Colors.red),
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
           ),
         ),
