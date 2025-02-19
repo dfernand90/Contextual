@@ -29,7 +29,7 @@ urlpatterns = [
     path('api/signup/', views.signup, name='signup'),
     path('api/upload/', views.upload_file, name='upload_files'),
     path('api/files/<str:username>/', views.list_files, name='list_files'),
-    path('api/query_llm/', views.query_llm, name='query_llm'),
+    path('api/query_llm/<str:username>/', views.query_llm, name='query_llm'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

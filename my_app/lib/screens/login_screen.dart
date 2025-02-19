@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
-import 'operation_screen.dart';
 import 'llm_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -19,9 +18,9 @@ class _LoginScreenState extends State<LoginScreen> {
   void _signup() async {
     String username = usernameController.text;
     String password = passwordController.text;
-    String code = codeController.text;
+
     try {
-      bool isAuthenticated = await ApiService.signup(username, password, code);
+      bool isAuthenticated = await ApiService.signup(username, password);
 
       if (isAuthenticated) {
         // If login is successful, navigate to home screen
@@ -100,13 +99,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: passwordController,
                   obscureText: true,
                   decoration: InputDecoration(labelText: 'Password'),
-                ),
-                TextField(
-                  controller: codeController,
-                  decoration: InputDecoration(
-                    labelText: 'Validation code',
-                    hintText: 'Enter the validation code',
-                  ),
                 ),
                 SizedBox(height: 30),
                 Row(

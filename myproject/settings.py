@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
     'localhost', 
     '127.0.0.1',
     '1db7-85-252-83-74.ngrok-free.app',
+    'abf1-81-175-57-4.ngrok-free.app',
 ]
 
 USE_X_FORWARDED_HOST = True
@@ -138,12 +139,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
-    'https://1db7-85-252-83-74.ngrok-free.app',  # Replace with your actual ngrok URL
+    'https://1db7-85-252-83-74.ngrok-free.app', 
+    'https://abf1-81-175-57-4.ngrok-free.app', # Replace with your actual ngrok URL
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://1db7-85-252-83-74.ngrok-free.app", 
-    "http://1db7-85-252-83-74.ngrok-free.app",  # Replace with your actual ngrok URL
+    "http://1db7-85-252-83-74.ngrok-free.app",
+    'https://abf1-81-175-57-4.ngrok-free.app',
+    'http://abf1-81-175-57-4.ngrok-free.app',  # Replace with your actual ngrok URL
 ] # Replace with your actual ngrok URL
 
 MEDIA_URL = '/media/'

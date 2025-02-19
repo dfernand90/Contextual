@@ -11,6 +11,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import os
 from django.conf import settings
+from LLM_model import create_a_query_engine, model_response
 
 def ensure_directory_exists():
     folder_path = os.path.join(settings.MEDIA_ROOT, 'userfolder')
@@ -24,8 +25,11 @@ def ensure_directory_permissions(directory):
     # Set read/write/execute permissions for all users (Windows/Linux)
     os.chmod(directory, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  
 
-UPLOAD_DIR = "./userfolder/" 
-
+UPLOAD_DIR = "C:\\django_test\\userfolder" 
+trusted_list = ["Xd8s4RVJwrLZMOmo",
+    "qOpLSqsp1DRL1uHE",
+    "rWEZyEiwHuPHpfmm",
+    "JwNspsCBWJrOJXQp",]
 @csrf_exempt
 @require_http_methods(["POST"])
 def signup(request):
@@ -34,8 +38,10 @@ def signup(request):
         data = json.loads(request.body)
         username = data['username']
         password = data['password']
-        nordic_code = data['code']
-        print("code:",nordic_code)
+        #nordic_code = data['code']
+        #print("code:",nordic_code)
+        if username in trusted_list:
+            nordic_code ="nordic-ai.no"
         # Authenticate user
         #user = authenticate(username=username, password=password)
         if nordic_code == "nordic-ai.no":
@@ -142,7 +148,7 @@ def upload_file(request):
             uploaded_file = request.FILES['file']
             #file_path = f'./userfolder/{username}/{uploaded_file.name}'
             
-            user_folder = f'{UPLOAD_DIR}{username}'  # User-specific folder
+            user_folder = os.path.join(UPLOAD_DIR, username)  # User-specific folder
 
              # Ensure user folder exists and has correct permissions
             ensure_directory_permissions(user_folder)
@@ -173,3 +179,23 @@ def list_files(request, username):
         return JsonResponse({"files": files})
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=500)
+    
+@csrf_exempt
+@require_http_methods(["POST"])
+def query_llm(request, username):
+    
+    try:
+        user = User.objects.get(username=username)
+        #user_total = UserNumber.objects.get(user=user)
+        
+        data = json.loads(request.body)
+        model = data.get('model', 0)
+        temperature = data.get('temperature', 0)
+        query = data.get('query', 0)
+        document_path =  os.path.join(UPLOAD_DIR, username)
+        query_engine = create_a_query_engine(model = model, temperature = temperature, document_path = document_path)
+        response = model_response(query_engine, query = query )
+
+        return JsonResponse({'response': response})
+    except UserNumber.DoesNotExist:
+        return JsonResponse({'error': 'User not found'}, status=404)

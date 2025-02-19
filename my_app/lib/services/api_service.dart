@@ -6,18 +6,16 @@ import 'package:flutter/foundation.dart'; // Needed for kIsWeb
 
 class ApiService {
   static const String baseUrl =
-      "https://1db7-85-252-83-74.ngrok-free.app"; //"http://127.0.0.1:8000"; // Your Django backend URL
+      "https://abf1-81-175-57-4.ngrok-free.app"; //"https://1db7-85-252-83-74.ngrok-free.app"; //"http://127.0.0.1:8000"; // Your Django backend URL
 
   // Signup the user with username and password
-  static Future<bool> signup(
-      String username, String password, String code) async {
+  static Future<bool> signup(String username, String password) async {
     final response = await http.post(
       Uri.parse('$baseUrl/api/signup/'),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
         'username': username,
         'password': password,
-        'code': code,
       }),
     );
 
