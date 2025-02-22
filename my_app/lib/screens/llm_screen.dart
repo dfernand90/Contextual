@@ -18,13 +18,13 @@ class _llmScreenState extends State<llmScreen> {
   int accumulatedTotal = 0;
   String currentResponse = "welcome";
   double sliderValue = 0.5;
-  String selectedEntry = "llama3.2:1b";
+  String selectedEntry = "deepseek-r1:1.5b";
   final List<String> dropdownEntries = [
     "llama3.2:1b",
-    "entry2",
-    "entry3",
-    "entry4",
-    "entry5"
+    "deepseek-r1:1.5b",
+    "qwen2.5-coder:3b ",
+    "deepseek-r1:latest",
+    "llama3:8b"
   ];
   File? selectedFile;
   List<String> files = [];

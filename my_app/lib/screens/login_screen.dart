@@ -75,7 +75,9 @@ class _LoginScreenState extends State<LoginScreen> {
     final isMobile = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Login')),
+      appBar: AppBar(
+          title: Text(
+              'Please log with your verification code, our site is anonymus')),
       body: Center(
         child: SingleChildScrollView(
           child: Container(
@@ -91,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextField(
                   controller: usernameController,
                   decoration: InputDecoration(
-                    labelText: 'Username',
+                    labelText: 'Verification code',
                     hintText: 'Enter the 16 characters you got by mail',
                   ),
                 ),
