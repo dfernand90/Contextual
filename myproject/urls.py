@@ -30,6 +30,8 @@ urlpatterns = [
     path('api/upload/', views.upload_file, name='upload_files'),
     path('api/files/<str:username>/', views.list_files, name='list_files'),
     path('api/query_llm/<str:username>/', views.query_llm, name='query_llm'),
+    path('api/clear/<str:username>/', views.clear_files, name='clear_files'),
+    path('api/reload_llm/<str:username>/', views.reload_llm, name='reload_llm'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
