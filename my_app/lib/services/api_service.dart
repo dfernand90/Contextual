@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart'; // Needed for kIsWeb
 
 class ApiService {
   static const String baseUrl =
-      "https://ca83-85-252-83-74.ngrok-free.app"; //"https://1db7-85-252-83-74.ngrok-free.app"; //"https://abf1-81-175-57-4.ngrok-free.app"; //"https://1db7-85-252-83-74.ngrok-free.app"; //"http://127.0.0.1:8000"; // Your Django backend URL
+      "https://56aa-85-252-83-74.ngrok-free.app"; //"https://ca83-85-252-83-74.ngrok-free.app"; //"https://1db7-85-252-83-74.ngrok-free.app"; //"https://abf1-81-175-57-4.ngrok-free.app"; //"https://1db7-85-252-83-74.ngrok-free.app"; //"http://127.0.0.1:8000"; // Your Django backend URL
 
   // Signup the user with username and password
   static Future<bool> signup(String username, String password) async {
@@ -79,6 +79,27 @@ class ApiService {
     };
     final response = await http.post(
       Uri.parse('$baseUrl/api/query_llm/$username/'),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(requestBody),
+    );
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      return data['response'];
+    } else {
+      throw Exception('Failed to get an answer');
+    }
+  }
+
+  // reload an llm
+  static Future<String> reloadLlm(
+      String username, double temperature, String model) async {
+    final requestBody = {
+      'temperature': temperature,
+      'model': model,
+    };
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/reload_llm/$username/'),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode(requestBody),
     );
@@ -170,6 +191,22 @@ class ApiService {
       return List<String>.from(data['files']);
     } else {
       throw Exception('Failed to load files');
+    }
+  }
+
+  // clear list of files for a user
+  static Future<List<String>> clearFiles(String username) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/api/clear/$username/'),
+      headers: {"Content-Type": "application/json"},
+    );
+    // print(response.body);
+    print('Response Status Code: ${response.statusCode}');
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return List<String>.from(data['files']);
+    } else {
+      throw Exception('Failed to clear files');
     }
   }
 }

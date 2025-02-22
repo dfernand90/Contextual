@@ -13,12 +13,14 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController codeController = TextEditingController();
   String errorMessage = '';
   final containerColor = const Color.fromARGB(238, 229, 229, 255);
-
+  bool isLoading = false; // Add loading state
   // create user
   void _signup() async {
     String username = usernameController.text;
     String password = passwordController.text;
-
+    setState(() {
+      isLoading = true;
+    });
     try {
       bool isAuthenticated = await ApiService.signup(username, password);
 
@@ -39,6 +41,10 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {
         errorMessage = 'Error signing up in: $e';
       });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -46,7 +52,9 @@ class _LoginScreenState extends State<LoginScreen> {
   void _login() async {
     String username = usernameController.text;
     String password = passwordController.text;
-
+    setState(() {
+      isLoading = true;
+    });
     try {
       bool isAuthenticated = await ApiService.login(username, password);
 
@@ -66,6 +74,10 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e) {
       setState(() {
         errorMessage = 'Error logging in: $e';
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
       });
     }
   }
@@ -106,9 +118,19 @@ class _LoginScreenState extends State<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ElevatedButton(onPressed: _login, child: Text('Login')),
+                    isLoading
+                        ? CircularProgressIndicator() // Show loading indicator
+                        : ElevatedButton(
+                            onPressed: isLoading ? null : _login,
+                            child: Text('Login'),
+                          ),
                     SizedBox(width: 10),
-                    ElevatedButton(onPressed: _signup, child: Text('Sign Up')),
+                    ElevatedButton(
+                      onPressed: isLoading
+                          ? null
+                          : _signup, // Disable button when loading
+                      child: Text('Sign Up'),
+                    ),
                   ],
                 ),
                 if (errorMessage.isNotEmpty)

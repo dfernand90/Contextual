@@ -15,16 +15,18 @@ class llmScreen extends StatefulWidget {
 class _llmScreenState extends State<llmScreen> {
   final TextEditingController numberController = TextEditingController();
   final TextEditingController queryController = TextEditingController();
+  bool isLoading = false; // Add loading state
   int accumulatedTotal = 0;
   String currentResponse = "welcome";
   double sliderValue = 0.5;
-  String selectedEntry = "deepseek-r1:1.5b";
+  String selectedEntry = "llama3.1";
   final List<String> dropdownEntries = [
     "llama3.2:1b",
     "deepseek-r1:1.5b",
     "qwen2.5-coder:3b ",
     "deepseek-r1:latest",
-    "llama3:8b"
+    "llama3.1",
+    "gemma:2b",
   ];
   File? selectedFile;
   List<String> files = [];
@@ -47,6 +49,9 @@ class _llmScreenState extends State<llmScreen> {
   }
 
   void _queryLlm() async {
+    setState(() {
+      isLoading = true;
+    });
     try {
       String response = await ApiService.queryLlm(
           widget.username,
@@ -60,6 +65,33 @@ class _llmScreenState extends State<llmScreen> {
       queryController.clear();
     } catch (e) {
       print("Error proccesing the query: $e");
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void _reloadLlm() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      String response = await ApiService.reloadLlm(
+          widget.username, // No need for String.parse
+          sliderValue, // Convert sliderValue properly
+          selectedEntry // Directly pass selectedEntry (already a String)
+          );
+      setState(() {
+        currentResponse = response;
+      });
+      queryController.clear();
+    } catch (e) {
+      print("Error proccesing the query: $e");
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -73,7 +105,9 @@ class _llmScreenState extends State<llmScreen> {
 
   Future<void> _pickAndUploadFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
-
+    setState(() {
+      isLoading = true;
+    });
     if (result == null) {
       // User canceled the file picker
       ScaffoldMessenger.of(context)
@@ -104,11 +138,27 @@ class _llmScreenState extends State<llmScreen> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("File upload failed")));
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   // Method to refresh the file list
   Future<void> _refreshFileList() async {
+    setState(() {
+      isLoading = true;
+    });
     List<String> updatedFiles = await ApiService.fetchFiles(widget.username);
+    setState(() {
+      files = updatedFiles;
+    });
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> _clearFileList() async {
+    List<String> updatedFiles = await ApiService.clearFiles(widget.username);
     setState(() {
       files = updatedFiles;
     });
@@ -182,9 +232,16 @@ class _llmScreenState extends State<llmScreen> {
               },
             ),
             SizedBox(height: 10),
+            isLoading
+                ? CircularProgressIndicator() // Show loading indicator
+                : ElevatedButton(
+                    onPressed: _pickAndUploadFile,
+                    child: Text("Upload PDF"),
+                  ),
+            SizedBox(height: 10),
             ElevatedButton(
-              onPressed: _pickAndUploadFile,
-              child: Text("Upload PDF"),
+              onPressed: _clearFileList,
+              child: Text("Clear context"),
             ),
           ],
         ),
@@ -220,7 +277,7 @@ class _llmScreenState extends State<llmScreen> {
               ),
             ),
             Container(
-              height: 413,
+              height: 400,
               alignment: Alignment.topLeft,
               child: TextField(
                 controller: TextEditingController(text: " $currentResponse"),
@@ -257,9 +314,24 @@ class _llmScreenState extends State<llmScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(onPressed: _queryLlm, child: Text("Send")),
+                isLoading
+                    ? CircularProgressIndicator() // Show loading indicator
+                    : ElevatedButton(
+                        onPressed: isLoading ? null : _queryLlm,
+                        child: Text("Send"),
+                      ),
                 SizedBox(width: 10),
-                ElevatedButton(onPressed: _logout, child: Text("Logout")),
+                ElevatedButton(
+                  onPressed: isLoading
+                      ? null
+                      : _reloadLlm, // Disable button when loading
+                  child: Text("Reload"),
+                ),
+                SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: _logout, // Logout doesn't need loading control
+                  child: Text("Logout"),
+                ),
               ],
             ),
             SizedBox(height: 10),
